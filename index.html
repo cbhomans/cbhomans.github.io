@@ -1,0 +1,99 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no">
+  <title>RDCEP All Hands 4.4</title>
+
+  <link rel="stylesheet" href="https://js.arcgis.com/4.4/esri/css/main.css">
+
+  <style>
+    html,
+    body,
+    #viewDiv {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+    }
+  </style>
+
+  <script src="https://js.arcgis.com/4.4/"></script>
+
+  <script>
+    require([
+      "esri/Map",
+      "esri/views/MapView",
+      "esri/layers/GroupLayer",
+      "esri/layers/MapImageLayer",
+      "esri/widgets/Legend",
+      "esri/WebMap",
+      "esri/views/SceneView",
+      "esri/widgets/LayerList",
+      "esri/WebScene",
+
+      "dojo/domReady!"
+    ], function(
+      Map, MapView, GroupLayer, MapImageLayer, Legend, WebMap, SceneView, LayerList, WebScene
+    ) {
+
+
+      var scene = new WebMap({
+        portalItem: {
+          id: "5bd163a4a89b42a2bd0ebb84041e2dd2",
+        }
+      });
+      
+
+        var modes = new GroupLayer({
+        title: "Mode",
+        visibility: true,
+        visibilityMode: "exclusive",
+        layers: scene.layers,
+        opacity: 0.75
+      });
+      
+      function check_visible(layer) {
+      return layer.visible;
+      }
+
+
+      var view = new MapView({
+        container: "viewDiv",
+        map: scene
+      });
+
+      view.then(function() {
+      var mylayers = scene.layers;
+
+        modes.addMany(mylayers);
+        scene.add(modes);
+
+        var layerList = new LayerList({
+          view: view,
+        });
+      var featureLayer = scene.layers.getItemAt(0);
+
+      var legend = new Legend({
+            view: view,
+            layerInfos: [{
+              layer: featureLayer,
+              title: featureLayer.layers.title
+            }]
+          });
+        view.ui.components = [ "attribution" ];
+        view.ui.add(layerList, "top-left");
+        view.ui.add(legend, "bottom-right");
+      });
+    });
+  </script>
+
+</head>
+
+<body class="calcite">
+  <div id="viewDiv"></div>
+</body>
+</html>
